@@ -48,7 +48,7 @@ public class HttpProcessor {
       // create HttpResponse object
       response = new HttpResponse(output);
       response.setRequest(request);
-
+      // header
       response.setHeader("Server", "Pyrmont Servlet Container");
 
       parseRequest(input, output);
@@ -90,7 +90,7 @@ public class HttpProcessor {
       HttpHeader header = new HttpHeader();;
 
       // Read the next header
-      input.readHeader(header);
+      input.readHeader(header);// 读取到空行 header解析结束
       if (header.nameEnd == 0) {
         if (header.valueEnd == 0) {
           return;
@@ -104,6 +104,8 @@ public class HttpProcessor {
       String name = new String(header.name, 0, header.nameEnd);
       String value = new String(header.value, 0, header.valueEnd);
       request.addHeader(name, value);
+      
+      // cookie，content-length、content-type在headers中有，同时也有单独的变量保存。
       // do something for some headers, ignore others.
       if (name.equals("cookie")) {
         Cookie cookies[] = RequestUtil.parseCookieHeader(value);
@@ -136,8 +138,13 @@ public class HttpProcessor {
     } //end while
   }
 
-
-  private void parseRequest(SocketInputStream input, OutputStream output)
+  /**
+   * 提取Method
+   * 提取uri：1. 提取 query string（不解析）； 2.提取sessionid； 3. normonize uri 
+   * 提取protocol
+   * 将上述信息保存到request中
+   */
+private void parseRequest(SocketInputStream input, OutputStream output)// output好像没有使用到
     throws IOException, ServletException {
 
     // Parse the incoming request line
@@ -192,7 +199,7 @@ public class HttpProcessor {
         request.setRequestedSessionId(rest.substring(0, semicolon2));
         rest = rest.substring(semicolon2);
       }
-      else {
+      else {// sessionid保存在HttpRequest中。
         request.setRequestedSessionId(rest);
         rest = "";
       }

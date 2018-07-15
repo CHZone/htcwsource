@@ -9,6 +9,7 @@ public class StaticResourceProcessor {
   public void process(HttpRequest request, HttpResponse response) {
     try {
       response.sendStaticResource();
+//      response.finishResponse();
     }
     catch (IOException e) {
       e.printStackTrace();

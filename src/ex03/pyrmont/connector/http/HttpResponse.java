@@ -210,6 +210,15 @@ public class HttpResponse implements HttpServletResponse {
   public OutputStream getStream() {
     return this.output;
   }
+  // 发送servlet headers by chzone
+  public void sendServletHeaders() throws IOException{
+	  this.sendHeaders();
+  }
+  // 刷新servlet response   by chzone
+  public void finishServletResponse(){
+	  finishResponse();
+  }
+  
   /**
    * Send the HTTP response headers, if this has not already occurred.
    */
@@ -302,6 +311,9 @@ public class HttpResponse implements HttpServletResponse {
 
   /* This method is used to serve a static page */
   public void sendStaticResource() throws IOException {
+	// 发送头，add by chzone
+	sendHeaders();
+	
     byte[] bytes = new byte[BUFFER_SIZE];
     FileInputStream fis = null;
     try {
@@ -332,6 +344,12 @@ public class HttpResponse implements HttpServletResponse {
     finally {
       if (fis!=null)
         fis.close();
+    }
+    
+    // 刷新 header add by chzone
+    if (writer != null) {
+      writer.flush();
+      writer.close();
     }
   }
 
@@ -531,6 +549,7 @@ public class HttpResponse implements HttpServletResponse {
       headers.put(name, values);
     }
     String match = name.toLowerCase();
+    // 会不会导致有两个content-length
     if (match.equals("content-length")) {
       int contentLength = -1;
       try {

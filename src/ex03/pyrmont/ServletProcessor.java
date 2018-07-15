@@ -46,8 +46,12 @@ public class ServletProcessor {
       servlet = (Servlet) myClass.newInstance();
       HttpRequestFacade requestFacade = new HttpRequestFacade(request);
       HttpResponseFacade responseFacade = new HttpResponseFacade(response);
+      // 发送头，add by chzone
+      ((HttpResponse) response).sendServletHeaders();;
       servlet.service(requestFacade, responseFacade);
-      ((HttpResponse) response).finishResponse();
+//      ((HttpResponse) response).finishResponse();
+      ((HttpResponse) response).finishServletResponse();;
+      
     }
     catch (Exception e) {
       System.out.println(e.toString());

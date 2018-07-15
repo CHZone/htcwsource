@@ -166,6 +166,7 @@ public class SocketInputStream extends InputStream {
                 }
             }
             // We're at the end of the internal buffer
+            // buf读完了，可以extract方法
             if (pos >= count) {
                 int val = read();
                 if (val == -1) {
@@ -175,6 +176,7 @@ public class SocketInputStream extends InputStream {
                 pos = 0;
                 readStart = 0;
             }
+            // 会多读一个SP
             if (buf[pos] == SP) {
                 space = true;
             }
@@ -182,7 +184,7 @@ public class SocketInputStream extends InputStream {
             readCount++;
             pos++;
         }
-
+        // 去掉多余的SP
         requestLine.methodEnd = readCount - 1;
 
         // Reading URI
@@ -295,7 +297,7 @@ public class SocketInputStream extends InputStream {
         // Recycling check
         if (header.nameEnd != 0)
             header.recycle();
-
+        // 空行检测
         // Checking for a blank line
         int chr = read();
         if ((chr == CR) || (chr == LF)) { // Skipping CR
@@ -315,8 +317,9 @@ public class SocketInputStream extends InputStream {
         int readCount = 0;
 
         boolean colon = false;
-
+        // 读取name
         while (!colon) {
+        	// 检查name是否大于header.name的长度
             // if the buffer is full, extend it
             if (readCount >= maxRead) {
                 if ((2 * maxRead) <= HttpHeader.MAX_NAME_SIZE) {
@@ -329,7 +332,7 @@ public class SocketInputStream extends InputStream {
                         (sm.getString("requestStream.readline.toolong"));
                 }
             }
-            // We're at the end of the internal buffer
+            // We're at the end of the internal buffer // buff读取处理完，需
             if (pos >= count) {
                 int val = read();
                 if (val == -1) {
@@ -339,11 +342,11 @@ public class SocketInputStream extends InputStream {
                 pos = 0;
                 readStart = 0;
             }
-            if (buf[pos] == COLON) {
+            if (buf[pos] == COLON) {// 遇到冒号 header.name解析结束
                 colon = true;
             }
             char val = (char) buf[pos];
-            if ((val >= 'A') && (val <= 'Z')) {
+            if ((val >= 'A') && (val <= 'Z')) {// name转小写
                 val = (char) (val - LC_OFFSET);
             }
             header.name[readCount] = val;
