@@ -210,11 +210,11 @@ public class HttpResponse implements HttpServletResponse {
   public OutputStream getStream() {
     return this.output;
   }
-  // 发送servlet headers by chzone
+  
   public void sendServletHeaders() throws IOException{
 	  this.sendHeaders();
   }
-  // 刷新servlet response   by chzone
+  
   public void finishServletResponse(){
 	  finishResponse();
   }
