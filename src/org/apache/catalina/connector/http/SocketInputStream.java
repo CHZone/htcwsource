@@ -156,6 +156,7 @@ public class SocketInputStream extends InputStream {
             if (readCount >= maxRead) {
                 if ((2 * maxRead) <= HttpRequestLine.MAX_METHOD_SIZE) {
                     char[] newBuffer = new char[2 * maxRead];
+                    // byte array 拷贝
                     System.arraycopy(requestLine.method, 0, newBuffer, 0,
                                      maxRead);
                     requestLine.method = newBuffer;
@@ -178,7 +179,7 @@ public class SocketInputStream extends InputStream {
             if (buf[pos] == SP) {
                 space = true;
             }
-            requestLine.method[readCount] = (char) buf[pos];
+            requestLine.method[readCount] = (char) buf[pos];// 为毛不用read()?
             readCount++;
             pos++;
         }
@@ -210,6 +211,7 @@ public class SocketInputStream extends InputStream {
                 }
             }
             // We're at the end of the internal buffer
+            // 感觉这些完全可以extract mothod 重构一下。
             if (pos >= count) {
                 int val = read();
                 if (val == -1)
@@ -297,6 +299,7 @@ public class SocketInputStream extends InputStream {
             header.recycle();
 
         // Checking for a blank line
+        // 如果是空行就返回
         int chr = read();
         if ((chr == CR) || (chr == LF)) { // Skipping CR
             if (chr == CR)
@@ -315,7 +318,7 @@ public class SocketInputStream extends InputStream {
         int readCount = 0;
 
         boolean colon = false;
-
+        // 冒号之前为name
         while (!colon) {
             // if the buffer is full, extend it
             if (readCount >= maxRead) {
@@ -415,6 +418,7 @@ public class SocketInputStream extends InputStream {
                     pos = 0;
                     readStart = 0;
                 }
+                // LF 就结束name解析
                 if (buf[pos] == CR) {
                 } else if (buf[pos] == LF) {
                     eol = true;
@@ -428,7 +432,7 @@ public class SocketInputStream extends InputStream {
             }
 
             int nextChr = read();
-
+            // 不太懂
             if ((nextChr != SP) && (nextChr != HT)) {
                 pos--;
                 validLine = false;

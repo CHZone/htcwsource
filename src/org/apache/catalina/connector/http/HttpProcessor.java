@@ -324,6 +324,7 @@ final class HttpProcessor
         }
 
         // Notify the Connector that we have received this Socket
+        // 防止出现assign方法卡在wait()中。
         Socket socket = this.socket;
         available = false;
         notifyAll();
@@ -513,7 +514,7 @@ final class HttpProcessor
      */
     private void parseHeaders(SocketInputStream input)
         throws IOException, ServletException {
-
+    	// 用户自定义的headname不保存？
         while (true) {
 
             HttpHeader header = request.allocateHeader();
@@ -664,7 +665,7 @@ final class HttpProcessor
 
         //System.out.println(" Method:" + method + "_ Uri:" + uri
         //                   + "_ Protocol:" + protocol);
-
+        // 默认协议为 http 0.9
         if (protocol.length() == 0)
             protocol = "HTTP/0.9";
 
@@ -915,13 +916,17 @@ final class HttpProcessor
                 if (ok) {
 
                     parseConnection(socket);
+                    // 解析 request line
                     parseRequest(input, output);
+                    // 只有http1.0和http1.1 解析request header？
                     if (!request.getRequest().getProtocol()
                         .startsWith("HTTP/0"))
                         parseHeaders(input);
                     if (http11) {
                         // Sending a request acknowledge back to the client if
                         // requested.
+                    	// Http/1.1的 header读取操作在哪？难道是交给Container
+                    	// 发送 continue
                         ackRequest(output);
                         // If the protocol is HTTP/1.1, chunking is allowed.
                         if (connector.isChunkingAllowed())
@@ -1088,11 +1093,17 @@ final class HttpProcessor
             }
 
             // Finish up this request
+            // 回收这个process。
+            // 如果Connect只有一个时，应该不需要在await中notify assgign方法
+            // 如何理解Connector与Processor之间的异步，
+            // 以及Processor中的同步，
+            // 为什么要考虑，使用局部变量socket，让this.socket接受新来的socket，有这个必要吗？
             connector.recycle(this);
 
         }
 
         // Tell threadStop() we have shut ourselves down successfully
+        // 如果要stop processor只能 process被调用，且该次请求处理完成。
         synchronized (threadSync) {
             threadSync.notifyAll();
         }

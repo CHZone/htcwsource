@@ -786,7 +786,7 @@ public final class HttpConnector
      * <code>null</code> instead.
      */
     private HttpProcessor createProcessor() {
-
+    	// processor只有用完之后才会添加到，stack中
         synchronized (processors) {
             if (processors.size() > 0) {
                 // if (debug >= 2)
@@ -861,9 +861,11 @@ public final class HttpConnector
 
         //        if (debug >= 2)
         //            log("newProcessor: Creating new processor");
+    	// Processor和Request、response同时创建
         HttpProcessor processor = new HttpProcessor(this, curProcessors++);
         if (processor instanceof Lifecycle) {
             try {
+            	// processor 在Connector中创建的时候，由lifecycle调用start？
                 ((Lifecycle) processor).start();
             } catch (LifecycleException e) {
                 log("newProcessor", e);
