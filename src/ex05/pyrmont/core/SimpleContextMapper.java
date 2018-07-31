@@ -49,7 +49,7 @@ public class SimpleContextMapper implements Mapper {
     String contextPath =
       ((HttpServletRequest) request.getRequest()).getContextPath();
     String requestURI = ((HttpRequest) request).getDecodedRequestURI();
-    String relativeURI = requestURI.substring(contextPath.length());
+    String relativeURI = requestURI.substring(contextPath.length());// 项目名之后
     // Apply the standard request URI mapping rules from the specification
     Wrapper wrapper = null;
     String servletPath = relativeURI;

@@ -28,6 +28,7 @@ public class SimpleContextValve implements Valve, Contained {
     }
 
     // Disallow any direct access to resources under WEB-INF or META-INF
+    // 返回的是facade？HttpServletRequest是face的接口
     HttpServletRequest hreq = (HttpServletRequest) request.getRequest();
     String contextPath = hreq.getContextPath();
     String requestURI = ((HttpRequest) request).getDecodedRequestURI();

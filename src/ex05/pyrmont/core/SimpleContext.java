@@ -605,6 +605,7 @@ public class SimpleContext implements Context, Pipeline {
   public Mapper findMapper(String protocol) {
     // the default mapper will always be returned, if any,
     // regardless the value of protocol
+	  // 当mappers的中只有一个mapper时， mapper才会不为null
     if (mapper != null)
       return (mapper);
     else

@@ -42,6 +42,7 @@ public class SimpleWrapper implements Wrapper, Pipeline {
     pipeline.addValve(valve);
   }
 
+  // allocate 和 load的区别
   public Servlet allocate() throws ServletException {
     // Load and initialize our instance if necessary
     if (instance==null) {
