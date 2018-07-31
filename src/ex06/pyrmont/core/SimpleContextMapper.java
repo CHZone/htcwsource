@@ -63,7 +63,7 @@ public class SimpleContextMapper implements Mapper {
 
     // Update the Request (if requested) and return this Wrapper
     if (update) {
-      request.setWrapper(wrapper);
+      request.setWrapper(wrapper);// wrapper 与本方法开始的判断配合，如果已经map过就不创建wrapp
       ((HttpRequest) request).setServletPath(servletPath);
       ((HttpRequest) request).setPathInfo(pathInfo);
     }
