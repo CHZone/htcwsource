@@ -12,6 +12,8 @@ public class ModernServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, 
     HttpServletResponse response) 
     throws ServletException, IOException {
+	  
+	 System.out.println("Executing ModernServlet......");
     
     response.setContentType("text/html");
     PrintWriter out = response.getWriter();
